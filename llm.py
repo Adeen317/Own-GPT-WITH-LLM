@@ -1,19 +1,31 @@
+import openai  
+from langchain.llms import OpenAI
+import os
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+import time
+from dotenv import load_dotenv,find_dotenv
+load_dotenv(find_dotenv())
 
+open_api_key= os.environ.get("OPENAI_AI_KEY")
+llm=OpenAI(openai_api_key=open_api_key)
 
-from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAI
+cities = ['Karachi',
+          'Islamabad',
+          'Lahore',
+          'Faisalabad',
+          'Sialkot',
+          'Murree',
+          'Rawalpindi',]
 
+prompt= PromptTemplate.from_template("what is the capital of {place}")
+#print(llm.predict("what is the capital of pakistan"))
+llm=OpenAI(temperature=0.3)
 
-llm = ChatOpenAI(openai_api_key="")
-llm = OpenAI()
-chat_model = ChatOpenAI(model="gpt-3.5-turbo-0125")
-
-from langchain_core.messages import HumanMessage
-
-text = "What would be a good company name for a company that makes colorful socks?"
-messages = [HumanMessage(content=text)]
-
-llm.invoke(text)
-# >> Feetful of Fun
-
-chat_model.invoke(messages)
+chain=LLMChain(llm=llm,prompt=prompt)
+for city in cities:
+    output=chain.run(city)
+    print(output)
+    time.sleep(2)
+print(os.getenv("OPENAI_API_KEY"))
+print("We ok")
